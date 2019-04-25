@@ -1,21 +1,20 @@
 <?php
-class RequestHandler{
 
-    $neppeQuery = "select Wachtwoord from Beheer where Gebruikersnaam = 'admin'";
-    $db;
+class RequestHandler{
+    private $db;
 
     function __construct(){
-        $db = new DatabaseHandler();
+        require("DatabaseHandler.php");
+        $this->db = new DatabaseHandler();
     }
 
     function handleRequest($Request){
-        $Query = $Request[0];
-        $Resultaat = $db->request($Query);
+        $Query = $Request;
+        $Resultaat = $this->db->request($Query);
 
         header('Content-Type: application/json');
         echo json_encode($Resultaat);
     }
-
 }
 
 ?>

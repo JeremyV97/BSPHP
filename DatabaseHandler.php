@@ -11,31 +11,18 @@ class DatabaseHandler{
 
     //Dit is de constructor, alle code dat hierin word geplaatst, word uitgevoerd bij het initializeren van deze class
     function __construct(){
-        $this->pdo = new PDO("mysql:host=$this->host;dbname=$this->db;",$this->user,$this->pass);
+        $this->pdo = new PDO("mysql:host=$this->host;dbname=$this->database;",$this->user,$this->pass);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    //function __construct($host, $database, $user, $pass){
-    //    $this->host = $host;
-    //    $this->database = $database;
-    //    $this->user = $user;
-    //    $this->pass = $pass;
-    //    $this->pdo = new PDO("mysql:host=$this->host;dbname=$this->db;",$this->user,$this->pass);
-    //    $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    //}
-
-
-    function request($query){
+    function request($Query){
         $stmt = $this->pdo->prepare($Query);
         $stmt->execute();
-        
+
         if(strpos(strtolower($Query), "insert") !== false){ return "msg:insert:succes"; }
-        else if(strpos(strtolower($QUery), "delete") !== false) { return "msg:delete:succes"; }
-        else if(strpos(strtolower($QUery), "update") !== false) { return "msg:update:succes"; }
+        else if(strpos(strtolower($Query), "delete") !== false) { return "msg:delete:succes"; }
+        else if(strpos(strtolower($Query), "update") !== false) { return "msg:update:succes"; }
         else{ return $stmt->fetchAll(); }
     }
-
-
-
 }
 ?>
