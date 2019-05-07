@@ -15,6 +15,13 @@ class RequestHandler{
         header('Content-Type: application/json');
         echo json_encode($Resultaat);
     }
+
+    function handleLogin($Gebruiker, $Wachtwoord, $isGebruiker){
+        $Resultaat = $this->db->requestLogin($Gebruiker, $Wachtwoord, $isGebruiker);
+        
+        header('Content-Type: application/json');
+        echo json_encode($Resultaat);
+    }
 }
 
 ?>
