@@ -19,10 +19,42 @@ class DatabaseHandler{
         $stmt = $this->pdo->prepare($Query);
         $stmt->execute();
 
+        //Todo check if insert/delete/update actually IS succesfull
         if(strpos(strtolower($Query), "insert") !== false){ return "msg:insert:succes"; }
         else if(strpos(strtolower($Query), "delete") !== false) { return "msg:delete:succes"; }
         else if(strpos(strtolower($Query), "update") !== false) { return "msg:update:succes"; }
-        else{ return $stmt->fetchAll(); }
+        else{ 
+            $Result = $stmt->fetchAll(); 
+            if($stmt->rowCount() !== 0){
+                return $Result;
+            }else{
+                return "msg:select:empty";
+            }
+        }
+    }
+
+    function requestLogin($Gebruiker, $Wachtwoord, $isGebruiker){
+        $Query = "";
+        if($isGebruiker == true){
+            $Query = "select Wachtwoord from Klant where Gebruikersnaam = '" . $Gebruiker . "';";
+        }
+        if($isGebruiker == false){
+            $Query = "select Wachtwoord from Beheer where Gebruikersnaam = '" . $Gebruiker . "';";
+        }
+
+        $stmt = $this->pdo->prepare($Query);
+        $stmt->execute();
+
+        $Result = $stmt->fetchAll();
+        if($stmt->rowCount() !== 1){
+            return "msg:login:failed:gebruikersnaam";
+        }
+        $gottenWachtwoord = $Result[0]["Wachtwoord"];
+        if($gottenWachtwoord == $Wachtwoord){
+            return "msg:login:succes";
+        }else{
+            return "msg:login:failed:wachtwoord";
+        }
     }
 }
 ?>

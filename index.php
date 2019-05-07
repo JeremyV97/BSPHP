@@ -9,10 +9,17 @@ if(isset($_POST)){
     $request = json_decode($json, true);
 
     $rh = new RequestHandler();
-    $rh->handleRequest($request["Request"]);
+    if(!isset($request["Request"])){
+        header('HTTP/1.0 403 Forbidden');
+    }
+    if($request["Request"] == "SQL"){
+        $rh->handleRequest($request["SQL"]);
+    }
+    if($request["Request"] == "Login"){
+        $rh->handleLogin($request["Gebruikersnaam"], $request["Wachtwoord"], $request["isGebruiker"]);
+    }
     
 }else{
-    echo "no";
     header('HTTP/1.0 403 Forbidden');
 }
 
