@@ -80,5 +80,71 @@ class DatabaseHandler{
             return "msg:login:failed:wachtwoord";
         }
     }
+
+    function requestRegisterKlant($klantID, $voornaam, $achternaam, $telefoon, $email, $adres, $gebruikersnaam, $wachtwoord, $bedrijfsnaam, $isGoedgekeurd){
+        //return password_hash($Cypher, PASSWORD_DEFAULT);
+        $Query = "Insert Into Klant Values (:klantID, :voornaam, :achternaam, :telefoon, :email, :adres, :gebruikersnaam, :wachtwoord, :bedrijfsnaam, :isGoedgekeurd);";
+        $stmt = $this->pdo->prepare($Query);
+
+        $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
+
+        $stmt->bindParam(':klantID', $klantID);
+        $stmt->bindParam(':voornaam', $voornaam);
+        $stmt->bindParam(':achternaam', $achternaam);
+        $stmt->bindParam(':telefoon', $telefoon);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':adres', $adres);
+        $stmt->bindParam(':gebruikersnaam', $gebruikersnaam);
+        $stmt->bindParam(':wachtwoord', $wachtwoord);
+        $stmt->bindParam(':bedrijfsnaam', $bedrijfsnaam);
+        $stmt->bindParam(':isGoedgekeurd', $isGoedgekeurd);
+
+        if($stmt->execute()){
+            return "msg:insert:succes:register_klant";
+        }else{
+            return "msg:insert:failed:register_klant";
+        }
+    }
+
+    function requestRegisterBeheer($gebruikersnaam, $wachtwoord){
+        $Query = "Insert Into Beheer Values (:gebruikersnaam, :wachtwoord);";
+        $stmt = $this->pdo->prepare($Query);
+
+        $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
+
+        $stmt->bindParam(':gebruikersnaam', $gebruikersnaam);
+        $stmt->bindParam(':wachtwoord', $wachtwoord);
+
+        if($stmt->execute()){
+            return "msg:insert:succes:register_beheer";
+        }else{
+            return "msg:insert:failed:register_beheer";
+        }
+    }
+
+    function requestSecureLogin($Gebruiker, $Wachtwoord, $isGebruiker){
+        $Query = "";
+        if($isGebruiker == true){
+            $Query = "select Wachtwoord from Klant where Gebruikersnaam = '" . $Gebruiker . "';";
+        }
+        if($isGebruiker == false){
+            $Query = "select Wachtwoord from Beheer where Gebruikersnaam = '" . $Gebruiker . "';";
+        }
+
+        $stmt = $this->pdo->prepare($Query);
+        $stmt->execute();
+
+        $Result = $stmt->fetchAll();
+        if($stmt->rowCount() !== 1){
+            return "msg:securelogin:failed:gebruikersnaam";
+        }
+        $gottenWachtwoord = $Result[0]["Wachtwoord"];
+        if(password_verify($Wachtwoord, $gottenWachtwoord)){
+            return "msg:securelogin:succes";
+        }else{
+            return "msg:securelogin:failed:wachtwoord";
+        }
+    }
+
 }
 ?>
