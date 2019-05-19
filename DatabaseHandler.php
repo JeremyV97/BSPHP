@@ -146,5 +146,25 @@ class DatabaseHandler{
         }
     }
 
+    function requestPasswordUpdate($Gebruikersnaam, $Wachtwoord, $isGebruiker){
+        $Tabel = "Beheer";
+        if($isGebruiker)
+            $Tabel = "Klant";
+
+        $Query = "Update $Tabel set Wachtwoord = :Wachtwoord Where Gebruikersnaam = :Gebruikersnaam;";
+        $stmt = $this->pdo->prepare($Query);
+
+        $Wachtwoord = password_hash($Wachtwoord, PASSWORD_DEFAULT);
+
+        $stmt->bindParam(":Wachtwoord", $Wachtwoord);
+        $stmt->bindParam(":Gebruikersnaam", $Gebruikersnaam);
+
+        $stmt->execute();
+        if($stmt->rowCount() > 0) 
+            return "msg:passwordupdate:succes";
+        else
+            return "msg:passwordupdate:failed:no-rows-affected"; 
+    }
+
 }
 ?>
