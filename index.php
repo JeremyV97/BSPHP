@@ -1,7 +1,5 @@
 <?php
-
 ini_set('display_errors',1); error_reporting(E_ALL);
-
 
 require("RequestHandler.php");
 if(isset($_POST)){
@@ -11,18 +9,10 @@ if(isset($_POST)){
     $rh = new RequestHandler();
     if(!isset($request["Request"])){
         header('HTTP/1.0 403 Forbidden');
+    }else{
+        $rh->handleRequest($request);
     }
-    if($request["Request"] == "SQL"){
-        $rh->handleRequest($request["SQL"]);
-    }
-    if($request["Request"] == "Login"){
-        $rh->handleLogin($request["Gebruikersnaam"], $request["Wachtwoord"], $request["isGebruiker"]);
-    }
-    
 }else{
     header('HTTP/1.0 403 Forbidden');
 }
-
-
-
 ?>
