@@ -166,5 +166,36 @@ class DatabaseHandler{
             return "msg:passwordupdate:failed:no-rows-affected"; 
     }
 
+    function requestRegisterRekening($Rekeningnummer, $Rekeningsoort, $Rente, $Saldo){
+        $Query = "Insert into Rekening Values (:Rekeningnummer, :Rekeningsoort, :Rente, :Saldo);";
+        $stmt = $this->pdo->prepare($Query);
+
+        $stmt->bindParam(":Rekeningnummer", $Rekeningnummer);
+        $stmt->bindParam(":Rekeningsoort", $Rekeningsoort);
+        $stmt->bindParam(":Rente", $Rente);
+        $stmt->bindParam(":Saldo", $Saldo);
+
+        if($stmt->execute()){
+            return "msg:insert:succes:rekening";
+        }else{
+            return "msg:insert:failed:rekening";
+        }
+    }
+
+    function requestRegisterKlantRekening($KlantID, $Rekeningnummer, $Rolnaam){
+        $Query = "Insert Into KlantRekening Values (:KlantID, :Rekeningnummer, :Rolnaam);";
+        $stmt = $this->pdo->prepare($Query);
+
+        $stmt->bindParam(":KlantID", $KlantID);
+        $stmt->bindParam(":Rekeningnummer", $Rekeningnummer);
+        $stmt->bindParam(":Rolnaam", $Rolnaam);
+
+        if($stmt->execute()){
+            return "msg:insert:succes:klantrekening";
+        }else{
+            return "msg:insert:failed:klantrekening";
+        }
+    }
+
 }
 ?>

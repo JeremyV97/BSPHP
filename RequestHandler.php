@@ -32,6 +32,12 @@ class RequestHandler{
             case "PasswordChange":
                 $Resultaat = $this->db->requestPasswordUpdate($Request["Gebruikersnaam"], $Request["Wachtwoord"], $Request["isGebruiker"]);
                 break;
+            case "RegisterRekening":
+                $Resultaat = $this->db->requestRegisterRekening($Request["Rekeningnummer"], $Request["RekeningsoortSoort"], $Request["Rente"], $Request["Saldo"]);
+                break;
+            case "RegisterKlantRekening":
+                $Resultaat = $this->db->requestRegisterKlantRekening($Request["KlantklantID"], $Request["RekeningRekeningnummer"], $Request["RolRolnaam"]);
+                break;
             default: 
                 header('HTTP/1.0 403 Forbidden');
                 die();
