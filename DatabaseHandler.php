@@ -196,7 +196,23 @@ class DatabaseHandler{
         }
     }
 
+    /*
+        Inge
+    */
     function requestRegisterTransaction($transactieID, $Datum, $Tijd, $Opmerkingen){
+        $Query = "Insert Into Transactie Values(:TransactieID, :Datum, :Tijd, :Opmerking);";
+        $stmt = $this->pdo->prepare($Query);
+
+        $stmt->bindParam(":TransactieID", $transactieID);
+        $stmt->bindParam(":Datum", $Datum);
+        $stmt->bindParam(":Tijd", $Tijd);
+        $stmt->bindParam(":Opmerking", $Opmerkingen);
+
+        if($stmt->execute()){
+            return "msg:insert:succes:register_transaction";
+        }else{
+            return "msg:insert:failed:register_transaction";
+        }
 
     }
 
