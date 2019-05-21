@@ -82,7 +82,6 @@ class DatabaseHandler{
     }
 
     function requestRegisterKlant($klantID, $voornaam, $achternaam, $telefoon, $email, $adres, $gebruikersnaam, $wachtwoord, $bedrijfsnaam, $isGoedgekeurd){
-        //return password_hash($Cypher, PASSWORD_DEFAULT);
         $Query = "Insert Into Klant Values (:klantID, :voornaam, :achternaam, :telefoon, :email, :adres, :gebruikersnaam, :wachtwoord, :bedrijfsnaam, :isGoedgekeurd);";
         $stmt = $this->pdo->prepare($Query);
 
@@ -176,9 +175,9 @@ class DatabaseHandler{
         $stmt->bindParam(":Saldo", $Saldo);
 
         if($stmt->execute()){
-            return "msg:insert:succes:rekening";
+            return "msg:insert:succes:register_rekening";
         }else{
-            return "msg:insert:failed:rekening";
+            return "msg:insert:failed:register_rekening";
         }
     }
 
@@ -191,10 +190,30 @@ class DatabaseHandler{
         $stmt->bindParam(":Rolnaam", $Rolnaam);
 
         if($stmt->execute()){
-            return "msg:insert:succes:klantrekening";
+            return "msg:insert:succes:register_klantrekening";
         }else{
-            return "msg:insert:failed:klantrekening";
+            return "msg:insert:failed:register_klantrekening";
         }
+    }
+
+    function requestRegisterTransaction($transactieID, $Datum, $Tijd, $Opmerkingen){
+
+    }
+
+    function requestRegisterTransactionIn($Rekeningnummer, $TransactieID, $Bedrag){
+
+    }
+
+    function requestRegisterTransactieUit($Rekeningnummer, $TransactieID, $Bedrag){
+
+    }
+
+    function requestRegisterBankpas($KlantID, $Pasnummer, $Pincode){
+
+    }
+
+    function requestRegisterZwarteLijst($KlantID, $Reden, $Opmerking){
+
     }
 
 }
