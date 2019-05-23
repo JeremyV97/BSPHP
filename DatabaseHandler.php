@@ -228,8 +228,17 @@ class DatabaseHandler{
 
     }
 
-    function requestRegisterZwarteLijst($KlantID, $Reden, $Opmerking){
-
+    function requestRegisterZwarteLijst($KlantID, $Reden, $Opmerking){ //Door Rutger
+        $Query = "Insert Into ZwarteLijst Values(:KlantID, :Reden, :Opmerking);";
+        $stmt = $this->pdo->prepare($Query);
+        $stmt->bindParam(":KlantID", $KlantID);
+        $stmt->bindParam(":Reden", $Reden);
+        $stmt->bindParam(":Opmerking", $Opmerkingen);
+        if($stmt->execute()){
+            return "msg:insert:succes:register_zwartelijst";
+        }else{
+            return "msg:insert:failed:register_zwartelijst";
+        }
     }
 
 }
