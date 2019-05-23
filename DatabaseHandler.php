@@ -215,9 +215,22 @@ class DatabaseHandler{
         }
 
     }
-
+    /**
+     * @author Mike 
+     */
     function requestRegisterTransactionIn($Rekeningnummer, $TransactieID, $Bedrag){
+        $Query = "Insert Into TransactieIn Values(:RekeningRekeningnummer, :TransactieTransactieID, :Bedrag);";
+        $stmt = $this->pdo->prepare($Query);    
 
+        $stmt->bindParam(":RekeningRekeningnummer", $Rekeningnummer);
+        $stmt->bindParam(":TransactieTransactieID", $TransactieID);
+        $stmt->bindParam(":Bedrag", $Bedrag);
+
+        if($stmt->execute()){
+            return "msg:insert:succes:register_transactiein";
+        } else{
+            return "msg:insert:failed:register_transactiein";
+        }
     }
 
     function requestRegisterTransactieUit($Rekeningnummer, $TransactieID, $Bedrag){
