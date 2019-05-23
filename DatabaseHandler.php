@@ -224,7 +224,23 @@ class DatabaseHandler{
 
     }
 
+
+    //Paul
     function requestRegisterBankpas($KlantID, $Pasnummer, $Pincode){
+        $Query = "Insert Into Bankpas Values(:KlantID, :Pasnummer, :Pincode);";
+        $stmt = $this->pdo->prepare($Query);
+
+        $stmt->bindParam(":KlantID", $KlantID);
+        $stmt->bindParam(":Pasnummer", $Pasnummer);
+        $stmt->bindParam(":Pincode", $Pincode);
+
+
+        if($stmt->execute()){
+            return "msg:insert:succes:register_Bankpas";
+        }else{
+            return "msg:insert:failed:register_Bankpas";
+        }
+
 
     }
 
