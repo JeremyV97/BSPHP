@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class: DatabaseHandler
+ * @author Jeremy Vorrink
+ * Description: Database class dat praat met de database, en geeft de resultaat terug
+ */
 class DatabaseHandler{
 
     private $pdo;
@@ -9,12 +14,22 @@ class DatabaseHandler{
     private $user = "U3753754";
     private $pass = "4hYwFMsfWmfD";
 
-    //Dit is de constructor, alle code dat hierin word geplaatst, word uitgevoerd bij het initializeren van deze class
+    /**
+     * Function: Constructor
+     * @author Jeremy Vorrink
+     * Description: Dit is de constructor, alle code dat hierin word geplaatst, word uitgevoerd bij het initializeren van deze class
+     */
     function __construct(){
         $this->pdo = new PDO("mysql:host=$this->host;dbname=$this->database;",$this->user,$this->pass);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
+    /**
+     * Function: Request
+     * @param $Query: SQL Query die uitgevoerd word
+     * @author Jeremy Vorrink
+     * Description: Voert de opgegeven SQL statement direct uit op de database
+     */
     function request($Query){
         $stmt = $this->pdo->prepare($Query);
         $isSuccesful = false;
@@ -57,6 +72,14 @@ class DatabaseHandler{
         }
     }
 
+    /**
+     * Function: requestLogin
+     * @param $Gebruiker
+     * @param $Wachtwoord
+     * @param $isGebruiker
+     * @author Jeremy Vorrink
+     * Description: Met de opgegeven gegevens checkt de functie of de gebruiker bestaat, en de opgegeven wachtwoord overeenkomt met de hash
+     */
     function requestLogin($Gebruiker, $Wachtwoord, $isGebruiker){
         $Query = "";
         if($isGebruiker == true){
@@ -81,22 +104,37 @@ class DatabaseHandler{
         }
     }
 
+    /**
+     * Function: requestRegisterKlant
+     * @param $klantID
+     * @param $voornaam
+     * @param $achternaam
+     * @param $telefoon
+     * @param $email
+     * @param $adres
+     * @param $gebruikersnaam
+     * @param $wachtwoord
+     * @param $bedrijfsnaam
+     * @param $isGoedgekeurd
+     * @author Jeremy Vorrink
+     * Description: Slaat de opgegeven gegevens op in de database tabel Klant
+     */
     function requestRegisterKlant($klantID, $voornaam, $achternaam, $telefoon, $email, $adres, $gebruikersnaam, $wachtwoord, $bedrijfsnaam, $isGoedgekeurd){
         $Query = "Insert Into Klant Values (:klantID, :voornaam, :achternaam, :telefoon, :email, :adres, :gebruikersnaam, :wachtwoord, :bedrijfsnaam, :isGoedgekeurd);";
         $stmt = $this->pdo->prepare($Query);
 
         $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
 
-        $stmt->bindParam(':klantID', $klantID);
-        $stmt->bindParam(':voornaam', $voornaam);
-        $stmt->bindParam(':achternaam', $achternaam);
-        $stmt->bindParam(':telefoon', $telefoon);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':adres', $adres);
-        $stmt->bindParam(':gebruikersnaam', $gebruikersnaam);
-        $stmt->bindParam(':wachtwoord', $wachtwoord);
-        $stmt->bindParam(':bedrijfsnaam', $bedrijfsnaam);
-        $stmt->bindParam(':isGoedgekeurd', $isGoedgekeurd);
+        $stmt->bindparam(':klantID', $klantID);
+        $stmt->bindparam(':voornaam', $voornaam);
+        $stmt->bindparam(':achternaam', $achternaam);
+        $stmt->bindparam(':telefoon', $telefoon);
+        $stmt->bindparam(':email', $email);
+        $stmt->bindparam(':adres', $adres);
+        $stmt->bindparam(':gebruikersnaam', $gebruikersnaam);
+        $stmt->bindparam(':wachtwoord', $wachtwoord);
+        $stmt->bindparam(':bedrijfsnaam', $bedrijfsnaam);
+        $stmt->bindparam(':isGoedgekeurd', $isGoedgekeurd);
 
         if($stmt->execute()){
             return "msg:insert:succes:register_klant";
@@ -105,14 +143,21 @@ class DatabaseHandler{
         }
     }
 
+    /**
+     * Function: requestRegisterBeheer
+     * @param $gebruikeresnaam
+     * @param $wachtwoord
+     * @author Jeremy Vorrink
+     * Description: Slaat de opgegeven gegevens op in de database tabel Beheer
+     */
     function requestRegisterBeheer($gebruikersnaam, $wachtwoord){
         $Query = "Insert Into Beheer Values (:gebruikersnaam, :wachtwoord);";
         $stmt = $this->pdo->prepare($Query);
 
         $wachtwoord = password_hash($wachtwoord, PASSWORD_DEFAULT);
 
-        $stmt->bindParam(':gebruikersnaam', $gebruikersnaam);
-        $stmt->bindParam(':wachtwoord', $wachtwoord);
+        $stmt->bindparam(':gebruikersnaam', $gebruikersnaam);
+        $stmt->bindparam(':wachtwoord', $wachtwoord);
 
         if($stmt->execute()){
             return "msg:insert:succes:register_beheer";
@@ -121,6 +166,14 @@ class DatabaseHandler{
         }
     }
 
+    /**
+     * Function: requestSecureLogin
+     * @param $Gebruiker
+     * @param $Wachtwoord
+     * @param $isGebruiker
+     * @author Jeremy Vorrink
+     * Description: Checked de gegevens met de database en checked de wachtwoord met password_verify
+     */
     function requestSecureLogin($Gebruiker, $Wachtwoord, $isGebruiker){
         $Query = "";
         if($isGebruiker == true){
@@ -145,6 +198,14 @@ class DatabaseHandler{
         }
     }
 
+    /**
+     * Function: requestPasswordUpdate
+     * @param $Gebruikersnaam
+     * @param $Wachtwoord
+     * @param $isGebruiker
+     * @author Jeremy Vorrink
+     * Description: Voert een nieuwe wachtwoord in voor de opgegeven gebruiker
+     */
     function requestPasswordUpdate($Gebruikersnaam, $Wachtwoord, $isGebruiker){
         $Tabel = "Beheer";
         if($isGebruiker)
@@ -155,8 +216,8 @@ class DatabaseHandler{
 
         $Wachtwoord = password_hash($Wachtwoord, PASSWORD_DEFAULT);
 
-        $stmt->bindParam(":Wachtwoord", $Wachtwoord);
-        $stmt->bindParam(":Gebruikersnaam", $Gebruikersnaam);
+        $stmt->bindparam(":Wachtwoord", $Wachtwoord);
+        $stmt->bindparam(":Gebruikersnaam", $Gebruikersnaam);
 
         $stmt->execute();
         if($stmt->rowCount() > 0) 
@@ -165,14 +226,23 @@ class DatabaseHandler{
             return "msg:passwordupdate:failed:no-rows-affected"; 
     }
 
+    /**
+     * Function: requestRegisterRekening
+     * @param $Rekeningnummer
+     * @param $Rekeningsoort
+     * @param $Rente
+     * @param $Saldo
+     * @author Jeremy Vorrink
+     * Description: Slaat de opgegeven gegevens op in de database tabel Rekening
+     */
     function requestRegisterRekening($Rekeningnummer, $Rekeningsoort, $Rente, $Saldo){
         $Query = "Insert into Rekening Values (:Rekeningnummer, :Rekeningsoort, :Rente, :Saldo);";
         $stmt = $this->pdo->prepare($Query);
 
-        $stmt->bindParam(":Rekeningnummer", $Rekeningnummer);
-        $stmt->bindParam(":Rekeningsoort", $Rekeningsoort);
-        $stmt->bindParam(":Rente", $Rente);
-        $stmt->bindParam(":Saldo", $Saldo);
+        $stmt->bindparam(":Rekeningnummer", $Rekeningnummer);
+        $stmt->bindparam(":Rekeningsoort", $Rekeningsoort);
+        $stmt->bindparam(":Rente", $Rente);
+        $stmt->bindparam(":Saldo", $Saldo);
 
         if($stmt->execute()){
             return "msg:insert:succes:register_rekening";
@@ -181,13 +251,21 @@ class DatabaseHandler{
         }
     }
 
+    /**
+     * Function: requestRegisterKlantRekening
+     * @param $KlantID
+     * @param $Rekeningnummer
+     * @param $Rolnaam
+     * @author Jeremy Vorrink
+     * Description: Voert de opgegeven gegevens op in de database tabel KlantRekening
+     */
     function requestRegisterKlantRekening($KlantID, $Rekeningnummer, $Rolnaam){
         $Query = "Insert Into KlantRekening Values (:KlantID, :Rekeningnummer, :Rolnaam);";
         $stmt = $this->pdo->prepare($Query);
 
-        $stmt->bindParam(":KlantID", $KlantID);
-        $stmt->bindParam(":Rekeningnummer", $Rekeningnummer);
-        $stmt->bindParam(":Rolnaam", $Rolnaam);
+        $stmt->bindparam(":KlantID", $KlantID);
+        $stmt->bindparam(":Rekeningnummer", $Rekeningnummer);
+        $stmt->bindparam(":Rolnaam", $Rolnaam);
 
         if($stmt->execute()){
             return "msg:insert:succes:register_klantrekening";
@@ -203,10 +281,10 @@ class DatabaseHandler{
         $Query = "Insert Into Transactie Values(:TransactieID, :Datum, :Tijd, :Opmerking);";
         $stmt = $this->pdo->prepare($Query);
 
-        $stmt->bindParam(":TransactieID", $transactieID);
-        $stmt->bindParam(":Datum", $Datum);
-        $stmt->bindParam(":Tijd", $Tijd);
-        $stmt->bindParam(":Opmerking", $Opmerkingen);
+        $stmt->bindparam(":TransactieID", $transactieID);
+        $stmt->bindparam(":Datum", $Datum);
+        $stmt->bindparam(":Tijd", $Tijd);
+        $stmt->bindparam(":Opmerking", $Opmerkingen);
 
         if($stmt->execute()){
             return "msg:insert:succes:register_transaction";
@@ -222,9 +300,9 @@ class DatabaseHandler{
         $Query = "Insert Into TransactieIn Values(:RekeningRekeningnummer, :TransactieTransactieID, :Bedrag);";
         $stmt = $this->pdo->prepare($Query);    
 
-        $stmt->bindParam(":RekeningRekeningnummer", $Rekeningnummer);
-        $stmt->bindParam(":TransactieTransactieID", $TransactieID);
-        $stmt->bindParam(":Bedrag", $Bedrag);
+        $stmt->bindparam(":RekeningRekeningnummer", $Rekeningnummer);
+        $stmt->bindparam(":TransactieTransactieID", $TransactieID);
+        $stmt->bindparam(":Bedrag", $Bedrag);
 
         if($stmt->execute()){
             return "msg:insert:succes:register_transactiein";
@@ -243,9 +321,9 @@ class DatabaseHandler{
         $Query = "Insert Into Bankpas Values(:KlantID, :Pasnummer, :Pincode);";
         $stmt = $this->pdo->prepare($Query);
 
-        $stmt->bindParam(":KlantID", $KlantID);
-        $stmt->bindParam(":Pasnummer", $Pasnummer);
-        $stmt->bindParam(":Pincode", $Pincode);
+        $stmt->bindparam(":KlantID", $KlantID);
+        $stmt->bindparam(":Pasnummer", $Pasnummer);
+        $stmt->bindparam(":Pincode", $Pincode);
 
 
         if($stmt->execute()){
@@ -260,9 +338,9 @@ class DatabaseHandler{
     function requestRegisterZwarteLijst($KlantID, $Reden, $Opmerking){ //Door Rutger
         $Query = "Insert Into ZwarteLijst Values(:KlantID, :Reden, :Opmerking);";
         $stmt = $this->pdo->prepare($Query);
-        $stmt->bindParam(":KlantID", $KlantID);
-        $stmt->bindParam(":Reden", $Reden);
-        $stmt->bindParam(":Opmerking", $Opmerkingen);
+        $stmt->bindparam(":KlantID", $KlantID);
+        $stmt->bindparam(":Reden", $Reden);
+        $stmt->bindparam(":Opmerking", $Opmerkingen);
         if($stmt->execute()){
             return "msg:insert:succes:register_zwartelijst";
         }else{

@@ -27,6 +27,12 @@
 //$ClearText = ClsEncryption::Decrypt($CipherText, $Key);
 //
 //~ Jeremy V.
+
+/**
+ * Class: ClsEncryption
+ * @author Jeremy Vorrink
+ * Description: Encrypt en Decrypt opgegeven data
+ */
 class ClsEncryption {
     public static function Encrypt($string, $key = ""){
         $ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
