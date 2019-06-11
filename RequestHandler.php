@@ -1,14 +1,31 @@
 <?php
 
+/**
+ * Class: RequestHandler
+ * @author Jeremy Vorrink
+ * Description: Handled de request die binnen komt wanneer de webservice word aangeroepen
+ */
 class RequestHandler{
     private $db;
 
+    /**
+     * Function: constructir
+     * @author Jeremy Vorrink
+     * Description: Initializeert de class
+     */
     function __construct(){
         require("DatabaseHandler.php");
         $this->db = new DatabaseHandler();
     }
 
-    public function handleRequest($Request){
+    /**
+     * Function: handleRequest
+     * @param $Request
+     * @param $Silent = false
+     * @author Jeremy Vorrink
+     * Description: leest de request uit en stuurt de request door naar database handler
+     */
+    public function handleRequest($Request, $Silent = false){
         $Query = "";
         $Resultaat = "";
 
@@ -43,8 +60,12 @@ class RequestHandler{
                 die();
                 break;
         }
-        header('Content-Type: application/json');
-        echo json_encode($Resultaat);
+        if(!$Silent){
+            header('Content-Type: application/json');
+            echo json_encode($Resultaat);
+        }else{
+            return $Resultaat;
+        }
     }
 
 }
